@@ -11,6 +11,16 @@ class Payment extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'amount',
+        'event_id',
+    ];
+
     public function event() {
         return $this->belongsTo(Event::class);
     }

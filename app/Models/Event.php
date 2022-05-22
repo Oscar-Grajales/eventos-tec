@@ -15,6 +15,34 @@ class Event extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'status',
+        'price',
+        'reason',
+        'starts_at',
+        'ends_at',
+        'confirmed_by',
+        'user_id',
+        'pack_id',
+    ];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @deprecated Use the "casts" property
+     *
+     * @var array
+     */
+    protected $dates = [
+        'starts_at','ends_at',
+    ];
+
     public function user() {
         return $this->belongsTo(User::class);
     }
