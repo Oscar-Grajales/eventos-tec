@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('photos', function (Blueprint $table) {
             $table->id();
             $table->string('path');
+            $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('event_id')->unsigned(); # Para el ID del evento correspondiente a la foto
 
             $table->timestamps();

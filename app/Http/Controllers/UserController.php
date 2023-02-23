@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -13,7 +16,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $this->authorize('viewAny', User::class);
+
+        $users = User::all();
+
+        return view('users', compact('users'));
     }
 
     /**
@@ -23,7 +30,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $this->authorize('create', User::class);
+
+        return view('new-user');
     }
 
     /**
@@ -34,7 +43,16 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->authorize('create', User::class);
+
+        $user = User::create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
+            'role' => $request->input('role'),
+        ]);
+
+        return redirect('users');
     }
 
     /**
@@ -56,7 +74,11 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::find($id);
+
+        $this->authorize('update', $user);
+
+        return view('edit-password', compact('id'));
     }
 
     /**
@@ -68,7 +90,14 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::find($id);
+
+        $this->authorize('update', $user);
+
+        $user->password = Hash::make($request->input('password'));
+        $user->save();
+
+        return redirect('users');
     }
 
     /**

@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+use \App\Models\Pack;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -20,5 +22,12 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+
+        $this->call(UserSeeder::class);
+        $this->call(PackSeeder::class);
+        // $this->call(EventSeeder::class);
+        // $this->call(ExpenseSeeder::class);
+        // $this->call(PhotoSeeder::class);
+        // $this->call(PaymentSeeder::class);
     }
 }

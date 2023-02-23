@@ -17,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/events', ['App\Http\Controllers\EventController', 'apiIndex']);
+Route::post('/payments', ['App\Http\Controllers\PaymentController', 'apiStore']);

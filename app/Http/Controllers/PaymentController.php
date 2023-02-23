@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Payment;
+use App\Models\Event;
+
 class PaymentController extends Controller
 {
     /**
@@ -13,7 +16,11 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        //
+        $this->authorize('viewAny', Payment::class);
+
+        $payments = Payment::all();
+
+        return view('payments', compact('payments'));
     }
 
     /**
@@ -34,7 +41,15 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->authorize('create', Payment::class);
+
+        $payment = new Payment;
+        $payment->amount = $request->input('amount');
+        $payment->event_id = $request->input('event_id');
+        $payment->status = "confirmed";
+        $payment->save();
+
+        return back();
     }
 
     /**
@@ -71,6 +86,17 @@ class PaymentController extends Controller
         //
     }
 
+    public function confirm($id) {
+        $payment = Payment::find($id);
+
+        $this->authorize('update', $payment);
+
+        $payment->status = "confirmed";
+        $payment->save();
+
+        return back();
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -80,5 +106,21 @@ class PaymentController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function apiStore(Request $request) {
+        $event = Event::find($request->input('event_id'));
+
+        if($event->status == "confirmed") {
+            $payment = new Payment;
+            $payment->amount = $request->input('amount');
+            $payment->event_id = $event->id;
+            $payment->status = "unconfirmed";
+            $payment->save();
+
+            return response($payment->toJson(), 201);
+        } else {
+            return response()->json(['msg' => 'Abono no realizado']);
+        }
     }
 }

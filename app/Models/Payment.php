@@ -18,6 +18,7 @@ class Payment extends Model
      */
     protected $fillable = [
         'amount',
+        'status',
         'event_id',
     ];
 

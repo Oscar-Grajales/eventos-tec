@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+use App\Models\Pack;
 
 class PackController extends Controller
 {
@@ -13,7 +16,13 @@ class PackController extends Controller
      */
     public function index()
     {
-        //
+        if(Auth::user()?->role == "manager") {
+            $packs = Pack::all();
+        } else {
+            $packs = Pack::where('status', 'available')->get();
+        }
+
+        return view('packs', compact('packs'));
     }
 
     /**
@@ -23,7 +32,9 @@ class PackController extends Controller
      */
     public function create()
     {
-        //
+        $this->authorize('create', Pack::class);
+
+        return view('new-pack');
     }
 
     /**
@@ -34,7 +45,14 @@ class PackController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $pack = Pack::create([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'status' => $request->input('status'),
+            'price' => $request->input('price'),
+        ]);
+
+        return redirect('packs');
     }
 
     /**
@@ -45,7 +63,20 @@ class PackController extends Controller
      */
     public function show($id)
     {
-        //
+        $pack = Pack::find($id);
+
+        return response($pack->toJson());
+    }
+
+    public function enable($id) {
+        $pack = Pack::find($id);
+
+        $this->authorize('update', $pack);
+
+        $pack->status = "available";
+        $pack->save();
+
+        return back();
     }
 
     /**

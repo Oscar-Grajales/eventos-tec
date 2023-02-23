@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('packs', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); 
+            $table->string('name');
+            $table->string('description', 500)->nullable();
             $table->string('status')->default('unavailable'); # El estado por defecto será 'no disponible'
             $table->float('price')->unsigned();
 

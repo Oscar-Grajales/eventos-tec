@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->float('amount')->unsigned();
+            $table->string('status')->default('unconfirmed');
             $table->bigInteger('event_id')->unsigned(); # Para el ID del evento correspondiente al abono
 
             $table->timestamps();

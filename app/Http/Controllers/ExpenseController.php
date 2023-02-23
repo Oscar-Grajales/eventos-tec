@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Expense;
+
 class ExpenseController extends Controller
 {
     /**
@@ -34,7 +36,15 @@ class ExpenseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->authorize('create', Expense::class);
+
+        $expense = new Expense;
+        $expense->amount = $request->input('amount');
+        $expense->description = $request->input('description');
+        $expense->event_id = $request->input('event_id');        
+        $expense->save();
+
+        return back();
     }
 
     /**

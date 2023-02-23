@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+use App\Models\Photo;
 
 class PhotoController extends Controller
 {
@@ -33,8 +36,23 @@ class PhotoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
+    {        
+        if(!$request->hasFile('photo')) {
+            return back();
+        }
+
+        $image = $request->file('photo');
+        $destinationPath = 'img/';
+        $photoName = time().'-'.$image->getClientOriginalName();
+        $uploadSuccess = $request->file('photo')->move($destinationPath, $photoName);
+
+        $photo = new Photo;
+        $photo->path = $destinationPath.$photoName;
+        $photo->user_id = Auth::id();
+        $photo->event_id = $request->input('event_id');
+        $photo->save();
+
+        return back();
     }
 
     /**
@@ -79,6 +97,12 @@ class PhotoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $photo = Photo::find($id);
+
+        $this->authorize('delete', $photo);
+
+        $photo->delete();
+
+        return back();
     }
 }
